@@ -1,4 +1,4 @@
-#define SDL_VIDEO_MODE_OPTIONS (SDL_RESIZABLE | SDL_HWSURFACE | SDL_GL_DOUBLEBUFFER )
+#define SDL_VIDEO_MODE_OPTIONS (SDL_RESIZABLE | SDL_OPENGL)
 #define SDL_DEPTH 32
 
 #define SCENE_ROTATION_STEP 5
@@ -16,15 +16,15 @@
 
 CAvatar::CAvatar(){
     should_be_running=false;
-    needs_rendering=false;
+    needs_rendering=true;
     window_height=800;
     window_width=800;
     window_title="Avatar";
 
-    world_origin_x=0;
-    world_origin_y=0;
-    world_origin_z=0;
-    camera_min_tz=0;
+    world_origin_x=0.5;
+    world_origin_y=0.5;
+    world_origin_z=10;
+    camera_min_tz=2;
     InitSceneConstants();
 }
 
@@ -48,7 +48,7 @@ int CAvatar::OnExecute(){
     SDL_Event event;
     SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
     should_be_running=true;
-
+    needs_rendering=true;
     while(should_be_running){
         while(SDL_PollEvent(&event)){
             OnEvent(&event);
@@ -71,9 +71,9 @@ bool CAvatar::OnInit(){
         return false;
     }
 
-    window_width=640;
-    window_height=480;
-    window_title="Avatar Main Window";
+    window_width=1000;
+    window_height=768;
+    window_title="Avatar Main Window l";
 
     SDL_WM_SetCaption(window_title,0);
 
@@ -84,7 +84,8 @@ bool CAvatar::OnInit(){
 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,16);
     SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE,32);
-
+   // SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+    /*
     SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE,8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE,8);
     SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE,8);
@@ -92,7 +93,7 @@ bool CAvatar::OnInit(){
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,2);
-
+*/
     sdl_pimage=SDL_SetVideoMode(window_width,window_height,SDL_DEPTH,SDL_VIDEO_MODE_OPTIONS);
     if(sdl_pimage==NULL)
         return false;
@@ -153,7 +154,7 @@ void CAvatar::OnRender(){
 }
 
 void CAvatar::OnEvent(SDL_Event* Event){
-
+needs_rendering=true;
     CEvent::OnEvent(Event);
 }
 
